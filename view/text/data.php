@@ -8,16 +8,8 @@
 </head>
 <body>
     <?php
-        require_once ("../work_db/db.php");
 
-        # Создаем новый экземпляр класса
-        $db = new Db;
-
-        # SQL-запрос для получения содержиомго таблицы text
-        $query = "SELECT * FROM `text` ";
-
-        # Результат работы с функцией
-        $sql = $db->connect($query);
+        require_once("../../model/text_processing/data.php");
 
         echo '<div >'.
                 # Таблица с заголовками
@@ -39,33 +31,28 @@
             '<table border="1">'.
                 '<tbody>';
 
-                    # Перебор всех элементов массива таблицы text
-                    while($text = $sql->fetch_assoc()){
+                        # Экземпляр класса data
+                        $data = new Data;
 
-                        # SQL-запрос для поиска совпадений id_text(табл. secret_text) с id (табл. text)
-                        $query_secret = "SELECT * FROM `secret_text` WHERE `id_text` = '$text[id]'";
+                        $data->table();
 
-                        # Результат работы с БД
-                        $sql_secret = $db->connect($query_secret);
 
-                        # Результат сравнения значений id и id_text
-                        $secret_text = $db->check($sql_secret);
 
                         # Вывод значений в таблицу
                         echo '<tr>'.
                             '<td width="200">' . $text['date'] . '</td>'.
                             '<td width="100">' . $text['title'] . '</td>'.
                             '<td width="400">' . $text['text'] . '</td>'.
-                            '<td width="400">' . $secret_text . '</td>'.
+                           # '<td width="400">' . $secret_text . '</td>'.
                         '</tr>';
-                    }
+
                 echo '</tbody>'.
             '</table>'.
         '</div>';
     ?>
 
     <div>
-        <form action='../work_db/sort.php' method="post">
+        <form action='../../work_db/sort.php' method="post">
 
             <!-- Выбор сортировки -->
             <p> Выберите критерий сортировки и введите число:

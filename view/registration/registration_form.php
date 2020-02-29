@@ -8,7 +8,7 @@
         <div>
             <form >
                 <?php
-                    require_once ("../work_db/db.php");
+                    require_once("../work_db/db.php");
 
                     # Создаем новый экземпляр класса
                     $db = new Db;
@@ -43,7 +43,7 @@
                                     # Вывод значений в таблицу
                                     echo '<tr>'.
                                         '<td width="200">' . $user['id'] . '</td>'.
-                                        '<td width="100">' . $user['login'] . '</td>'.
+                                        '<td width="100">' . $user['input'] . '</td>'.
                                         '<td width="320">' . $user['password'] . '</td>'.
                                     '</tr>';
                                 }
@@ -76,7 +76,7 @@
                 <p>
                     <!--Кнопка для возврата на страницу ввода текста-->
                     <input type="button" value="Назад" size ="50"
-                           onclick="location.href='../text_processing/input_admin.html';">
+                           onclick="location.href='../view/input_text/input_admin.html';">
 
                     <!--Кнопка для просмотра информации-->
                     <input type="button" value="Информация по использованию" onclick="location.href='info.html';">

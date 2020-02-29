@@ -7,22 +7,11 @@
 </head>
 <body>
     <?php
-        require_once ("../work_db/db.php");
+        require_once("../work_db/db.php");
 
-        # Проверка поля с числом
-        if ($_POST['number']== NULL) {
 
-            # Выход с ошибкой
-            exit("Введите число");
-        }
 
-        # Число для сравнения
-        $number = $_POST['number'];
-
-        # Знак для сравнения
-        $sign = $_POST['sign'];
-
-        # SQL-запроса для получения значений таблицы secret_text
+        #  SQL-запроса для получения значений таблицы secret_text
         $query_secret = "SELECT * FROM `secret_text`";
 
         # Создаем новый экземпляр класса
@@ -46,7 +35,7 @@
             '</table>'.
         '<div/>'.
 
-        '<div style="width: auto; height: 400px; overflow: auto;">'.
+        '<div style="width: auto; height: 550px; overflow: auto;">'.
             # Таблица с данными
             '<table border="1">'.
                 '<tbody>';
@@ -77,20 +66,21 @@
                                 '<td width="400">' .  $secret_text['secret_text'] . '</td>'.
                             '</tr>';
                         }
+
                     }
                 echo '</tbody>'.
             '</table>'.
         '</div>';
     ?>
 
-<div>
-    <form>
-        <p>
-            <!-- Кнопка для возврата к просмотру таблицы со всеми данными-->
-            <input style="width: 270px; height: 30px;" type="button" value="Вернуться к просмотру всех данных"
-                   onclick="location.href='../text_processing/data_admin.php';">
-        </p>
-    </form>
-</div>
+    <div>
+        <form>
+            <p>
+                <!-- Кнопка для возврата к таблице со всеми данными-->
+                <input type="button" value="Вернуться к просмотру всех данных"
+                       onclick="location.href='data.php';">
+            </p>
+        </form>
+    </div>
 </body>
 </html>

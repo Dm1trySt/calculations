@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Registration</title>
     <style>div{margin-top: 20%;}</style>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <body>

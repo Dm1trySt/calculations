@@ -7,18 +7,20 @@
 </head>
 <body>
     <?php
-        require_once("../work_db/db.php");
+        require_once("../../model/text_processing/sort.php");
 
+        # Проверка поля с числом
+        if ($_POST['number']== NULL) {
 
+            # Выход с ошибкой
+            exit("Введите число");
+        }
 
-        #  SQL-запроса для получения значений таблицы secret_text
-        $query_secret = "SELECT * FROM `secret_text`";
+        # Число для сравнения
+        $number = $_POST['number'];
 
-        # Создаем новый экземпляр класса
-        $db = new Db;
-
-        # Результат работы с функцией
-        $sql_secret = $db->connect($query_secret);
+        # Знак для сравнения
+        $sign = $_POST['sign'];
 
         echo '<div>'.
             # Таблица с заголовками
@@ -40,34 +42,12 @@
             '<table border="1">'.
                 '<tbody>';
 
-                    # Перебор всех элементов массива таблицы secret_text
-                    while($secret_text = $sql_secret->fetch_assoc()){
+                    # Экземпляр класса Sort
+                    $sort = new Sort;
 
-                        # Результат поиска подходящих по заданным условиям элементов
-                        $result = $db->search($secret_text['secret_text'],$sign,$number);
+                    # Вывод отсортированной таблицы
+                    $sort->data_sort($sign,$number);
 
-                        # Найдены элементы удовлетворяющие условиям поиска
-                        if ($result != NULL){
-
-                            # SQL-запрос для поиска совпадений id (табл. text) с id_text (табл. secret_text)
-                            $query_text = "SELECT * FROM `text` WHERE `id` = '$secret_text[id_text]'";
-
-                            # Результат работы с БД
-                            $sql_text = $db->connect($query_text);
-
-                            # Результат сравнения значений id и id_text
-                            $text = $sql_text->fetch_assoc();
-
-                            # Вывод значений в таблицу
-                            echo '<tr>'.
-                                '<td width="200">' . $text['date'] . '</td>'.
-                                '<td width="100">' . $text['title'] . '</td>'.
-                                '<td width="400">' . $text['text'] . '</td>'.
-                                '<td width="400">' .  $secret_text['secret_text'] . '</td>'.
-                            '</tr>';
-                        }
-
-                    }
                 echo '</tbody>'.
             '</table>'.
         '</div>';

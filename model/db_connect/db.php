@@ -1,193 +1,76 @@
 <?php
-class Db{
+    class Db{
 
-    # Для id записи
-    private $id;
+        # Контейнер для id записи
+        public $id;
 
-    # Подключение к БД и запрос
-    public function connect($str){
+        # Подключение к БД
+        public function pdo(){
 
-        # mysqli - устанавливает соединения с БД
-        $db = new mysqli('localhost','root','','db');
+            # Данные для соединения с БД при помощи PDO
+            $driver = 'mysql';
+            $host = 'localhost';
+            $name_db = 'db';
+            $user_db = 'root';
+            $password_db = '';
+            $charset = 'utf8';
 
-        # Проверка на успешное соединение с БД
-        if ($db->connect_errno){
+            # ATTR_ERRMODE -режим сообщений об ошибках
+            $options = [PDO::ATTR_ERRMODE];
 
-            # Выход с ошибкой
-            exit("Не удалось подключиться к БД:" . $db->connect_errno );
+            # Проверка на успешное соединение с БД
+            try {
+
+                # PDO - устанавливает соединения с БД
+                $pdo = new PDO("$driver:host=$host;dbname=$name_db;charset=$charset",$user_db,$password_db,$options);
+
+                # Если есть ошибка отслеживаем PDOException
+                # $err - информация об ошибке
+            }catch (PDOException $err){
+                die("Ошибка при попытке подключения к базе данных");
+            }
+
+            return $pdo;
         }
 
-        # Запрос в БД
-        $sql = $db->query($str);
+        # SQL-запрос в БД
+        public function sql_query($sql){
 
-        # id текущей записи
-        $this->id = $db->insert_id;
+            # Подключение к БД
+            $db = $this->pdo();
 
-        # Выход из БД
-        $db->close();
+            # SQL-запрос в БД
+            $sql = $db->query($sql);
 
-        return $sql;
-    }
-
-    # Поиск подходящих значений
-    public function search($text,$sign,$number){
-
-        # Контейнер для положительного или отрицательного ответа
-        $presence = NULL;
-
-        # Проверка на равенство
-        if($sign == "1") {
-
-            # explode - преобразует строки в массив данных
-            $arr = explode(',',$text);
-
-            # Перебор массива
-            foreach ($arr as $value){
-
-                # Преобразование строки $value в число
-                $value = (int)$value;
-
-                # Если значение равно числу - подходящее значение
-                if ($value == $number){
-
-                    # Контейнер = 1 т.к. найдено подходящее значние
-                    $presence = 1;
-                }
-            }
-
-            # Значение больше заданного числа
-        }elseif ($sign == "2"){
-
-            # Преобразование строки $number в число
-            $number =(int)$number;
-
-            # Преобразование строк в массив данных
-            $arr = explode(',',$text);
-
-            # Перебор массива
-            foreach ($arr as $value){
-
-                # Преобразование строки $value в число
-                $value = (int)$value;
-
-                # Если значение больше числа - подходящее значение
-                if ($value > $number){
-
-                    # Контейнер = 1 т.к. найдено подходящее значние
-                    $presence = 1;
-                }
-            }
-
-            # Значение меньше заданного числа
-        }else{
-
-            # Преобразование строки $number в число
-            $number =(int)$number;
-
-            # Преобразование строк в массив данных
-            $arr = explode(',',$text);
-
-            # Перебор массива
-            foreach ($arr as $value){
-
-                # Преобразование строки $value в число
-                $value = (int)$value;
-
-                # Если значение меньше числа - подходящее значение
-                if ($value < $number){
-
-                    # Контейнер = 1 т.к. найдено подходящее значние
-                    $presence = 1;
-                }
-            }
+            return $sql;
         }
 
-        # Были подходящие значения
-        if ($presence == NULL)
-            return $result = NULL;
-        else
-            return $result = $text;
-    }
+        # SQL-запрос в БД c параметрами
+        public function sql_query_param($sql, $params){
 
-    # Поиск секретного расчета
-    public function parser($text, $z1, $z2){
+            # Подключение к БД
+            $db = $this->pdo();
 
-        # Массив из строк
-        #explode - преобразует строки в массив данных
-        $t_arr= explode(" ", $text);
+            # prepare - подготовка запроса к выполнению
+            $sql = $db->prepare($sql);
 
-        # Контейнер для хранения подходящих значений
-        $secret_text = "";
+            # execute - запускает подготовленный запрос на выполнение
+            $sql->execute($params);
 
-        # Перебор всех элементов массива
-        foreach ($t_arr as $value){
+            # id текущей записи
+            $this->id = $db->lastInsertId('id');
 
-            # Поиск по заданным параметрам порядковый номер походящего символа
-            # strpos — возвращает позицию первого вхождения искомого элемента
-            $line_number = strpos($value, $z1);
-
-            # substr - возваращает часть строки
-            $start_str = substr($value, $line_number);
-
-            # strip_tags - очищает строку от HTML тегов
-            # Поиск окончания строки
-            $str =  strip_tags(substr($start_str,0, strpos($start_str, $z2)));
-
-            # Есть ли в начале строки "{"
-            if (substr($str, 0, 1) == "{"){
-
-                # Вывод строки будет после символа {
-                $str = substr($str,1);
-
-                # В строке есть число
-                if (is_numeric($str)){
-
-                    # Перевод строки в формат float
-                    $str =(float)$str;
-
-                    # floor - округляет дробь в меньшую сторону
-                    # Это число целое
-                    if ($str - floor($str) == 0){
-
-                        # Перевод числа в формат int
-                        $str =(int)$str;
-
-                        # Добавление подходящих значений
-                        $secret_text .= $str.", ";
-                    }
-                }
-            }
+            return $sql;
         }
-
-        # Удаление последних двух элементов строки
-        $secret_text= substr($secret_text,0,-2);
 
         # id записи
-        $id = $this->id;
+        public function id_params($sql,$params){
 
-        # Запись секретного текста и id текста в массив
-        $result = [$secret_text, $id];
+            # Отправка SQL-запроса в БД
+            $this->sql_query_param($sql,$params);
 
-        return $result;
-    }
-
-    # Сравнение значений
-    public function check ($sql){
-
-        # Перевод данных из формата БД в массив
-        $arr= $sql->fetch_assoc();
-
-        # Контейнер для результатов
-        $result = "";
-
-        # Если совпадений нет - пустой результат
-        if ($arr != NULL){
-
-            # Серкетный текст из массива
-            $result = $arr['secret_text'] ;
+            # id записи
+            return $this->id;
         }
-
-        return $result;
     }
-}
 ?>

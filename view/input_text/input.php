@@ -7,7 +7,8 @@
 </head>
 <body>
     <div class="title">
-        <form action="../../controller/text/record_admin.php" method="post">
+        <form action="../../controller/text/record.php" method="post">
+
             <!--поле ввода названия-->
             <p>Название: <input type = "text" name="title" id="title" size="42"
                                 placeholder="Введите название">
@@ -24,13 +25,13 @@
             <p>
                 <input type="submit" value="Сохранить">
                 <input type="reset" value="Очистить">
-                <input type="button" value="Вывод данных" onclick="location.href='../text/data_admin.php';">
+                <input type="button" value="Вывод данных" onclick="location.href='../text/data.php';">
 
                 <!-- Вход выполнен с администратора? -->
-                <?php session_start(); if ($_SESSION['login']=="Admin"):?>
+                <?php session_start(); if ($_SESSION['login'] == "Admin"):?>
                     <input type="button" value="Регистрация"
                         onclick="location.href='../registration/registration_form.php';">
-                <?php endif; ?>
+                <?php endif;?>
             </p>
 
             <!--Выход-->

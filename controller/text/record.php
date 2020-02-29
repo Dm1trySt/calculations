@@ -2,12 +2,9 @@
 
     require_once("../../model/text_processing/record_sql.php");
 
-    # Присваиваем текст и название из глобального массива POST
+    # Присваение текста и названия из глобального массива POST
     $text = $_POST['text'];
     $title = $_POST['title'];
-
-    # Время
-    #$date = time();
 
     # Экземпляр класса записи
     $record = new Record_sql;
@@ -16,6 +13,6 @@
     $record->processing($text,$title);
 
     # Переход на страницу ввода текста
-    header('Location: ../../view/input_text/input.html');
+    header('Location: ../../view/input_text/input.php');
 
 ?>

@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration</title>
+    </head>
+    <body>
         <div>
-            <form >
+            <form>
                 <?php
-                    require_once("../work_db/db.php");
-
-                    # Создаем новый экземпляр класса
-                    $db = new Db;
-
-                    # SQL-запрос для получения содержиомго таблицы users
-                    $query = "SELECT * FROM `users` ";
-
-                    # Результат работы с функцией
-                    $sql = $db->connect($query);
+                    require_once("../../model/registration/user_table.php");
 
                     # Таблица с заголовками
                     echo '<table border="1">'.
@@ -31,22 +22,17 @@
                             '</thead>'.
                     '</table>'.
 
-
                     '<div style="width: auto; height: 200px; overflow: auto;">'.
                         # Таблица с данными
                         '<table border="1">'.
                             '<tbody>';
 
-                                # Перебор всех элементов массива таблицы users
-                                while($user = $sql->fetch_assoc()){
+                                # Экземпляр класса User_table
+                                $user_table = new User_table;
 
-                                    # Вывод значений в таблицу
-                                    echo '<tr>'.
-                                        '<td width="200">' . $user['id'] . '</td>'.
-                                        '<td width="100">' . $user['input'] . '</td>'.
-                                        '<td width="320">' . $user['password'] . '</td>'.
-                                    '</tr>';
-                                }
+                                # Вывод таблицы
+                                $user_table->output_table();
+
                             echo '</tbody>'.
                         '</table>'.
                     '</div>';
@@ -55,7 +41,7 @@
         </div>
 
         <div>
-            <form action="registration.php" method="post">
+            <form action="../../controller/authorization/registration.php" method="post">
 
                 <!-- Формы для ввода данных-->
                 <p>
@@ -76,12 +62,12 @@
                 <p>
                     <!--Кнопка для возврата на страницу ввода текста-->
                     <input type="button" value="Назад" size ="50"
-                           onclick="location.href='../view/input_text/input_admin.html';">
+                           onclick="location.href='../input_text/input.php';">
 
                     <!--Кнопка для просмотра информации-->
                     <input type="button" value="Информация по использованию" onclick="location.href='info.html';">
                 </p>
             </form>
         </div>
-</body>
+    </body>
 </html>
